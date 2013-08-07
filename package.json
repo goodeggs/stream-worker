@@ -1,0 +1,21 @@
+{
+  "name": "stream-worker",
+  "version": "0.0.0",
+  "description": "Execute an async function per stream data event, pausing the stream when a concurrency limit is saturated",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/goodeggs/stream-worker.git"
+  },
+  "keywords": [
+    "stream",
+    "worker",
+    "async",
+    "queue"
+  ],
+  "author": "Good Eggs <eng@goodeggs.com> (http://bites.goodeggs.com)",
+  "license": "BSD"
+}
