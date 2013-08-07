@@ -2,7 +2,7 @@
   "name": "stream-worker",
   "version": "0.0.0",
   "description": "Execute an async function per stream data event, pausing the stream when a concurrency limit is saturated",
-  "main": "index.js",
+  "main": "stream-worker.js",
   "scripts": {
     "test": "mocha"
   },
