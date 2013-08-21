@@ -3,8 +3,7 @@ module.exports = function(stream, concurrency, worker, cb) {
   var tasks = [],
       running = 0,
       closed = false,
-      firstError = null,
-      startNextTask;
+      firstError = null;
 
   function errorHandler (err) {
     if (err != null) {
@@ -61,4 +60,4 @@ module.exports = function(stream, concurrency, worker, cb) {
     closed = true;
     completeIfDone();
   });
-}
+};
