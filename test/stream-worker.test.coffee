@@ -6,7 +6,7 @@ streamWorker = require '..'
 
 describe 'stream-worker', ->
   {stream, concurrencyLimit, work, workers, done} = {}
-  
+
   beforeEach ->
     concurrencyLimit = 2
     stream = new PassThrough()
@@ -42,6 +42,27 @@ describe 'stream-worker', ->
 
       it 'resumes the stream', ->
         expect(stream.resume).was.called()
+
+  describe 'the stream synchronously dispatches multiple data events from resume', ->
+    # this is how mongoose QueryStream behaves: http://mongoosejs.com/docs/api.html#querystream_QueryStream
+    beforeEach ->
+      # stub resume to emit multiple data events
+      originalResume = stream.resume
+      stream.resume = (args...) ->
+        stream.emit 'data', 'c'
+        stream.emit 'data', 'd'
+        originalResume.apply stream, args
+
+      # saturate workers, with 1 'b' queued for the first free worker
+      for x in [0..concurrencyLimit]
+        stream.write 'b'
+
+      workers[0].done() # free to work on the enqueued 'b'
+      work.reset() # only assert on workers invoked after the resume
+      workers[1].done() # free to work on something new, triggers resume
+
+    it 'still respects concurrency limits', ->
+      expect(work).was.calledOnce() # there's only one free worker
 
   describe 'when the stream ends', ->
     describe 'while workers are working', ->

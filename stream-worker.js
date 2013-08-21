@@ -22,21 +22,22 @@ module.exports = function(stream, concurrency, worker, cb) {
     }
   }
 
+  function finishTask (err) {
+    running -= 1;
+    errorHandler(err);
+    if (tasks.length) {
+      startNextTask();
+    } else {
+      completeIfDone();
+      stream.resume();
+    }
+  }
+
   function startNextTask () {
     var data = tasks.shift();
     if (data == null) {
-      return completeIfDone();
+      completeIfDone();
     }
-
-    function finishTask (err) {
-      running -= 1;
-      errorHandler(err);
-      if (!tasks.length) {
-        stream.resume();
-      }
-      startNextTask();
-    }
-
     running += 1;
     try {
       worker(data, finishTask);
@@ -54,9 +55,7 @@ module.exports = function(stream, concurrency, worker, cb) {
     }
   });
 
-  stream.on('error', function(err) {
-    errorHandler(err);
-  });
+  stream.on('error', errorHandler);
 
   stream.on('end', function() {
     closed = true;
