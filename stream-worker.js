@@ -19,7 +19,7 @@ module.exports = function(stream, concurrency, worker, cb) {
     });
 
     function errorHandler (err) {
-      firstError = firstError || err
+      firstError = firstError || err;
     }
 
     function finishTask (err) {
