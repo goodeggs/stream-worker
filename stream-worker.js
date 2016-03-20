@@ -13,7 +13,7 @@ module.exports = function(stream, concurrency, worker, cb) {
   return Promise.try(function() {
 
     var resolve, reject;
-    streamPromise = new Promise(function(__resolve, __reject) {
+    var streamPromise = new Promise(function(__resolve, __reject) {
       resolve = __resolve;
       reject = __reject;
     });
