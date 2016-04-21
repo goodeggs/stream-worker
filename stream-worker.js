@@ -26,6 +26,11 @@ module.exports = function(stream, concurrency, worker, cb) {
       }
     }
 
+    function closeHandler () {
+      closed = true;
+      completeIfDone();
+    }
+
     function finishTask (err) {
       running -= 1;
       errorHandler(err);
@@ -72,11 +77,8 @@ module.exports = function(stream, concurrency, worker, cb) {
     });
 
     stream.on('error', errorHandler);
-
-    stream.on('end', function() {
-      closed = true;
-      completeIfDone();
-    });
+    stream.on('close', closeHandler);
+    stream.on('end', closeHandler);
 
     return streamPromise;
   })

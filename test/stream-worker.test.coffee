@@ -184,3 +184,27 @@ describe 'stream-worker', ->
           Promise.resolve() # wait for async operations
           .then -> Promise.resolve() # wait again...
           .then -> expect(done).was.called()
+
+    describe 'when the stream is closed with an error', ->
+      describe 'while workers are working', ->
+        beforeEach () ->
+          stream.write 'a'
+          stream.emit 'error', new Error('a')
+          stream.emit 'close'
+
+        it 'waits for all workers to finish, then calls the done callback', ->
+          expect(done).was.notCalled()
+          workers[0].done()
+          Promise.resolve() # wait for async operations
+          .then -> Promise.resolve() # wait again...
+          .then -> expect(done).was.called()
+
+      describe 'before emitting any data', ->
+        beforeEach () ->
+          stream.emit 'error', new Error('a')
+          stream.emit 'close'
+
+        it 'still calls the done callback', ->
+          Promise.resolve() # wait for async operations
+          .then -> Promise.resolve() # wait again...
+          .then -> expect(done).was.called()
