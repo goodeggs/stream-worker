@@ -184,3 +184,54 @@ describe 'stream-worker', ->
           Promise.resolve() # wait for async operations
           .then -> Promise.resolve() # wait again...
           .then -> expect(done).was.called()
+
+    describe 'when the stream is closed with an error', ->
+      describe 'while workers are working', ->
+        beforeEach () ->
+          stream.write 'a'
+          stream.emit 'error', new Error('a')
+          stream.emit 'close'
+
+        it 'waits for all workers to finish, then calls the done callback', ->
+          expect(done).was.notCalled()
+          workers[0].done()
+          Promise.resolve() # wait for async operations
+          .then -> Promise.resolve() # wait again...
+          .then -> expect(done).was.called()
+
+      describe 'before emitting any data', ->
+        beforeEach () ->
+          stream.emit 'error', new Error('a')
+          stream.emit 'close'
+
+        it 'still calls the done callback', ->
+          Promise.resolve() # wait for async operations
+          .then -> Promise.resolve() # wait again...
+          .then -> expect(done).was.called()
+
+    describe 'when the stream is closed with an error after ending', ->
+      describe 'while workers are working', ->
+        beforeEach () ->
+          stream.write 'a'
+          stream.emit 'end'
+          # in case the underlying stream implementation emits both an
+          # end and error/close pair of events
+          stream.emit 'error', new Error('a')
+          stream.emit 'close'
+
+        it 'waits for all workers to finish, then calls the done callback', ->
+          expect(done).was.notCalled()
+          workers[0].done()
+          Promise.resolve() # wait for async operations
+          .then -> Promise.resolve() # wait again...
+          .then -> expect(done).was.calledOnce() # ensure only called once
+
+      describe 'before emitting any data', ->
+        beforeEach () ->
+          stream.emit 'error', new Error('a')
+          stream.emit 'close'
+
+        it 'still calls the done callback', ->
+          Promise.resolve() # wait for async operations
+          .then -> Promise.resolve() # wait again...
+          .then -> expect(done).was.calledOnce() # ensure only called once
