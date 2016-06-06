@@ -21,12 +21,12 @@ var streamWorker = require('stream-worker');
 
 
 Promise style:
-
 ```js
-streamWorker(stream, 10, function(data) {
+function doWork(data){
   /* ... do some work with data ... */
   return Promise.resolve();
-})
+}
+streamWorker(stream, doWork, {promises : true, concurrency : 10})
 .then(function() {
   /* ... the stream is exhausted and all workers are finished ... */
 }, function(err) {
@@ -38,11 +38,12 @@ streamWorker(stream, 10, function(data) {
 Callback style:
 
 ```js
-streamWorker(stream, 10,
-  function(data, done) {
-    /* ... do some work with data ... */
-    done(err);
-  },
+
+function doWork(data, done){
+  /* ... do some work with data ... */
+  return done(err);;
+}
+streamWorker(stream, doWork, {promises : false, concurrency :10},
   function(err) {
     /* ... the stream is exhauseted and all workers are finished ... */
   }
@@ -51,4 +52,15 @@ streamWorker(stream, 10,
 
 Signature
 ---------
-streamWorker(**stream**, **concurrencyLimit**, **work**, **done**)
+streamWorker(**stream**, **work**, **options**, **done**)
+
+Where **options** is an object with 2 optional parameters:
+
+| Parameter     | Default       | Description|
+|------------- |-------------| -----|
+| promises      |false| true if you want to use the above promises style|
+| concurrency| 10|specifies how many concurrent workers you want doing work in the stream |
+
+And **done** is a callback function if you use the callback workflow.
+
+
