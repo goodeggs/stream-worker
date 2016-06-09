@@ -1,12 +1,24 @@
 var Promise = require('bluebird');
 
-module.exports = function(stream, concurrency, worker, cb) {
+
+/**
+ *
+ * @param {Stream} stream
+ * @param {Function} worker - work to be done on each data element of the stream
+ * @param {Object} options
+ * @param {Boolean} [options.promises=false] - if true, the worker operates using promises.
+ * @param {Number} [options.concurrency=10] - the maximum number of tasks to run concurrently
+ * @param {Function} [done] - if using callbacks, this is called when work on the stream finishes
+ */
+module.exports = function(stream, worker, options, done) {
   var tasks = [],
       running = 0,
       closed = false,
       firstError = null;
 
-  if (worker.length > 1) { // worker returns a callback
+  var promises = options.promises ? options.promises : false;
+  var concurrency = options.concurrency ? options.concurrency : 10;
+  if (promises === false) {
     worker = Promise.promisify(worker);
   }
 
@@ -82,5 +94,5 @@ module.exports = function(stream, concurrency, worker, cb) {
 
     return streamPromise;
   })
-  .asCallback(cb);
+  .asCallback(done);
 };

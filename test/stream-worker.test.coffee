@@ -19,8 +19,10 @@ describe 'stream-worker', ->
         promise = new Promise (__resolve) -> resolve = __resolve
         workers.push {data, done: resolve}
         promise
-
-      streamWorker(stream, concurrencyLimit, work).then(done)
+      options =
+        promises : true,
+        concurrency : concurrencyLimit
+      streamWorker(stream, work, options).then(done)
 
       return # so that we don't return a promise from the beforeEach block
 
@@ -106,8 +108,10 @@ describe 'stream-worker', ->
       done = sinon.spy()
       work = sinon.spy (data, workerDone) ->
         workers.push {data, done: workerDone}
-
-      streamWorker stream, concurrencyLimit, work, done
+      options =
+        concurrency : concurrencyLimit
+        promises : false
+      streamWorker stream, work, options, done
 
       return # so that we don't return a promise from the beforeEach block
 

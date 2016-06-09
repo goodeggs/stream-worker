@@ -1,6 +1,6 @@
 {
   "name": "stream-worker",
-  "version": "1.0.2",
+  "version": "2.0.0",
   "description": "Execute an async function per stream data event, pausing the stream when a concurrency limit is saturated",
   "main": "stream-worker.js",
   "scripts": {
@@ -20,11 +20,12 @@
   "license": "BSD",
   "devDependencies": {
     "expect.js": "~0.2.0",
-    "sinon": "~1.7.3",
-    "sinon-expect": "~0.2.0",
+    "grunt": "^0.4.0",
     "grunt-contrib-jshint": "~0.6.3",
     "grunt-simple-mocha": "~0.4.0",
-    "matchdep": "~0.1.2"
+    "matchdep": "~0.1.2",
+    "sinon": "~1.7.3",
+    "sinon-expect": "~0.2.0"
   },
   "engines": {
     "node": "~0.10.0"
