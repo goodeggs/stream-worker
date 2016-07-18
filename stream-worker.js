@@ -60,17 +60,14 @@ module.exports = function(stream, worker, options, done) {
         completeIfDone();
       }
       running += 1;
-      try {
-        Promise.resolve(worker(data))
-        .then(function (finishedWith) {
-          finishTask();
-        })
-        .error(function (err) {
-          finishTask(err);
-        });
-      } catch (e) {
-        finishTask(e);
-      }
+      Promise.try(function() { return worker(data); })
+      .then(function (finishedWith) {
+        finishTask();
+        return null;
+      }, function (err) {
+        finishTask(err);
+        return null;
+      });
     }
 
     function completeIfDone () {
