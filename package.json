@@ -16,8 +16,8 @@
     "async",
     "queue"
   ],
-  "author": "Good Eggs <eng@goodeggs.com> (http://bites.goodeggs.com)",
-  "license": "BSD",
+  "author": "Good Eggs <open-source@goodeggs.com>",
+  "license": "MIT",
   "devDependencies": {
     "expect.js": "~0.2.0",
     "grunt": "^0.4.0",
