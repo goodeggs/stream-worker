@@ -1,6 +1,6 @@
 {
   "name": "stream-worker",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Execute an async function per stream data event, pausing the stream when a concurrency limit is saturated",
   "main": "stream-worker.js",
   "scripts": {
@@ -16,14 +16,15 @@
     "async",
     "queue"
   ],
-  "author": "Good Eggs <eng@goodeggs.com> (http://bites.goodeggs.com)",
-  "license": "BSD",
+  "author": "Good Eggs <open-source@goodeggs.com>",
+  "license": "MIT",
   "devDependencies": {
     "expect.js": "~0.2.0",
     "grunt": "^0.4.0",
     "grunt-contrib-jshint": "~0.6.3",
     "grunt-simple-mocha": "~0.4.0",
     "matchdep": "~0.1.2",
+    "mocha": "~2.5.3",
     "sinon": "~1.7.3",
     "sinon-expect": "~0.2.0"
   },
